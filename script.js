@@ -26,16 +26,16 @@ const pillers_info = [];
 let calculate = 12;
 
 for(let i = 0; i < (100 - 20) / calculate; i++){
+    let height = RandomGenerator(body_positons.height - 100)
     pillers_info.push(
         {
             isUp : i % 2 === 0 ? false : true,
-            height : RandomGenerator(body_positons.height - 100),
-            width : 70,
+            height : height <= 50 ? height + 100 : height,
+            width : 50,
         }
     );
 }
 
-console.log(pillers_info);
 
 const arrows = {
     left: false,
@@ -78,6 +78,7 @@ const StartGame = () => {
         document.body.appendChild(div);
         increment++;
     });
+    pillers_running();
     document.body.classList.remove('bodyFlexing');
     document.body.classList.add('apply_after_start');
     ball.classList.add('ball');
@@ -104,7 +105,7 @@ const StopMoveBall = (e) => {
 document.body.addEventListener('keydown', MoveBall);
 document.body.addEventListener('keyup', StopMoveBall);
 
-let speed = 5;
+let speed = 10;
 
 const positions = {
     x: 0,
@@ -114,12 +115,25 @@ const positions = {
 const piller_speed = 2;
 
 const pillers_running = () => {
+    let speed = 3;
+    let selected_pillers = [];
     if(isGameStart){
-        
+        for(let i = 0; i < pillers_info.length; i++){
+            selected_pillers.push(document.getElementById(`pillter_${i}`));
+        }
+        selected_pillers.forEach((p,index) => {
+            let p_info = p.getBoundingClientRect();
+            let letf_pos = p_info.left;
+            letf_pos -= speed;
+            if(p.style.left.includes('-')){
+                p.style.left = `100%`;
+            }else{
+                p.style.left = `${letf_pos}px`;
+            }
+        });
     }
     requestAnimationFrame(pillers_running);
 };
-
 
 const AnimateBall = () => {
     if (isGameStart) {
